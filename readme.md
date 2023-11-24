@@ -17,14 +17,15 @@ cd aaa
 ```
 
 ## To-Do List
-- [ ] Make a guided installer
-- [ ] Make a prettier `readme.md` file
-- [X] Make a post-installation helper (adjuster)
-- [ ] Make it run with just curl ([similar to this](https://github.com/ChrisTitusTech/ArchTitus))
-- [ ] Have an automatic option
+- [ ] Make an automatic installer
   - [ ] Automatically detect region for localization
   - [ ] Automatically detect drivers necessary
   - [ ] Automatically adjust partition size
+- [X] Make a post-installation helper (adjuster)
+  - [ ] Have different package options depending on the profile chosen
+  - [ ] If it has been run after the installer and a new user has been provided, add it to the necessary groups
+- [ ] Make it a one-line command ([similar to this](https://github.com/ChrisTitusTech/ArchTitus))
+- [ ] Make the `readme.md` file prettier
 
 ## Credits
 We're all standing on the shoulders of giants! (aka I'm basically just ~~stealing~~ borrowing a lot of code and ideas). 
