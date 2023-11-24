@@ -82,7 +82,8 @@ function adjuster {
         2) echo -e "${WAIT} Adjusting towards a desktop environment..."
            # TODO: actually install gnome
            # sudo pacman -Sy --noconfirm gnome thunderbird monero signal-desktop &&\
-           # echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error;;
+           # echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error
+           ;;
         *) echo -e "${INFO} No profile has been chosen.";;
     esac
 

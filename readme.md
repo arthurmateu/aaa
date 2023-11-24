@@ -8,12 +8,9 @@ You will need the following:
 - You will need a bootable USB drive with the [latest Arch image](https://archlinux.org/download/)
 - An internet connection after booting (see [iwctl](https://wiki.archlinux.org/title/iwd#iwctl) if you plan on doing this through a wireless connection).
 
-Afterwards, just run the following commands:
+Afterwards, just run the following command:
 ```
-pacman -Sy git
-git clone https://github.com/arthurmateu/aaa.git
-cd aaa
-./aaa.sh
+curl -s https://raw.githubusercontent.com/arthurmateu/aaa/main/aaa.sh | bash
 ```
 
 ## To-Do List
@@ -24,7 +21,8 @@ cd aaa
 - [X] Make a post-installation helper (adjuster)
   - [ ] Have different package options depending on the profile chosen
   - [ ] If it has been run after the installer and a new user has been provided, add it to the necessary groups
-- [ ] Make it a one-line command ([similar to this](https://github.com/ChrisTitusTech/ArchTitus))
+- [X] Make it a one-line command ([similar to this](https://github.com/ChrisTitusTech/ArchTitus))
+  - [ ] Make the one-liner shorter 
 - [ ] Make the `readme.md` file prettier
 
 ## Credits
