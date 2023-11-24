@@ -9,7 +9,7 @@ FAIL='\e[31m[-]\e[0m'
 QUESTION='\e[35m[?]\e[0m'
 
 function installer {
-    # Set up system time (ask for timezone by city [ex = New_York])
+    # Set up system time
         # echo -e "${INFO} STARTING LOCALIZATION ${INFO}"
         # (Automatically detect region and respective keymap and timezone)
         # localectl list-keymaps | grep keymap
@@ -70,7 +70,7 @@ function adjuster {
 
     case $profile in
         1) echo -e "${WAIT} Adjusting towards a minimal environment..."
-           sudo pacman -Sy --noconfirm libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf monerod monero-wallet-cli signal-desktop element-desktop &&\
+           sudo pacman -Sy --noconfirm libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf neomutt newsboat monerod monero-wallet-cli &&\
            git clone https://github.com/arthurmateu/dotfiles.git &&\
            cd dotfiles/dwm && sudo make clean install &&\
            cd ../dmenu && sudo make clean install &&\
@@ -80,17 +80,19 @@ function adjuster {
            echo "# feh --bg-fill Pictures/ &" >> .xinitrc &&\
            echo -e "${SUCCESS} Succesfully adjusted minimal environment" || default_error;;
         2) echo -e "${WAIT} Adjusting towards a desktop environment..."
-           sudo pacman -Sy --noconfirm gnome thunderbird monero &&\
-           echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error;;
+           # TODO: actually install gnome
+           # sudo pacman -Sy --noconfirm gnome thunderbird monero signal-desktop &&\
+           # echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error;;
         *) echo -e "${INFO} No profile has been chosen.";;
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc cups &&\
+    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
-    sudo usermod -aG lp ${username} &&\
+    # TODO: if there's a non-root user, add it to the group
+    # sudo usermod -aG lp ${username} &&\
     echo -e "${SUCCESS} Succesfully enabled printer" || default_error
 
     echo -e "${WAIT} Installing QEMU components..."
@@ -98,7 +100,8 @@ function adjuster {
     echo -e "${SUCCESS} Succesfully installed QEMU components" || default_error
     echo -e "${WAIT} Setting up QEMU..."
     sudo systemctl enable --now libvirtd.service &&\
-    sudo usermod -aG libvirt ${username} &&\
+    # TODO: if there's a non-root user, add it to the group
+    # sudo usermod -aG libvirt ${username} &&\
     sudo systemctl restart libvirtd.service &&\
     echo -e "${SUCCESS} Succesfully setted up QEMU" || default_error
 
@@ -112,8 +115,9 @@ function adjuster {
     rm -rf /tmp/yay
     echo -e "${SUCCESS} Succesfully installed yay" || default_error
     # TODO: Download specific AUR packages, depending on profile (minimal/desktop)
+        # MINIMAL: yay -Syu mullvad-vpn-cli signal-cli
+        # DESKTOP: yay -Syu mullvad-vpn spotify discord megasync &&\
     # echo -e "${WAIT} Installing AUR packages..."
-    # yay -Syu mullvad-vpn spotify discord megasync &&\
     # echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error
 }
 
