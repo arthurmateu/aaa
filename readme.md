@@ -1,7 +1,7 @@
 # Arthur's Arch linux Auto-installer (AAA)
 :battery: *My batteries for Arch!* :battery:
 
-Archinstaller was giving me a lot of problems, so I decided to make this. This script gives you a guided installation to Arch Linux and/or install most packages I use daily.
+Archinstaller was giving me a lot of problems, so I decided to make this. The purpose of this script is to make an automatic Arch Linux install (with an encrypted drive) and/or install most packages I use daily.
 
 ## How to use
 You will need the following:
@@ -32,6 +32,7 @@ Please check all sources I used!
 - [Arch Linux wiki](https://wiki.archlinux.org/title/Installation_guide)
 - [ArchMatic](https://github.com/rickellis/ArchMatic)
 - [ArchTitus](https://github.com/ChrisTitusTech/ArchTitus)
+- [LARBS](https://larbs.xyz/)
 - [RobFisher's Framework Arch Install guide](https://gist.github.com/RobFisher/abd9b2b9fca4194ac8df112715045b61)
 - [The Linux Command Line](https://linuxcommand.org/tlcl.php) by William Shotts
 - [sandipsky's autoinstall script](https://github.com/sandipsky/arch)
