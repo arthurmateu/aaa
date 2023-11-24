@@ -11,11 +11,9 @@ QUESTION='\e[35m[?]\e[0m'
 function installer {
     # Set up system time (ask for timezone by city [ex = New_York])
         # echo -e "${INFO} STARTING LOCALIZATION ${INFO}"
-        # echo -ne "${QUESTION} Please insert your nearest big city: "
+        # (Automatically detect region and respective keymap and timezone)
         # localectl list-keymaps | grep keymap
         # loadkeys ${keymap}
-        # echo -ne "${QUESTION} Please insert your nearest big city (Example = New_York): "
-        # read region
         # timedatectl list-timezones | grep region
         # ln -sf /usr/share/zoneinfo/{region} /etc/localtime
         # timedatectl set-ntp true
@@ -45,6 +43,7 @@ function installer {
         # {UNCOMMENT DESIRED LOCALES, will probably use sed}
 
     # Set up account passwords (root - user [ask if should be root] - boot)
+        # Ask if user wants to set up hostname and account (y/N)
         # echo -e "${INFO} SETTING UP ACCOUNTS ${INFO}"
         # echo -ne "${QUESTION} Please insert hostname: "
         # read {hostname:=archlinux} > /etc/hostname
@@ -64,26 +63,14 @@ function adjuster {
 
     echo -ne "${QUESTION} Please choose a profile option: 
     0. None
-    1. XFCE
-    2. KDE Plasma
-    3. Gnome
-    4. DWM (w/personal dotfiles)
+    1. Minimal (dwm w/personal dotfiles)
+    2. Desktop (Gnome)
     > "
-    read de
+    read profile
 
-    case $de in
-        1) echo -e "${WAIT} Installing XFCE4..."
-           sudo pacman -Sy --noconfirm xfce4 xfce4-goodies lightdm lightdm-gtk-greeter xorg-xinit xorg &&\
-           echo "exec startxfce4" > ~/.xinitrc &&\
-           echo -e "${SUCCESS} Succesfully installed XFCE4" || default_error;;
-        2) echo -e "${WAIT} Installing KDE Plasma..."
-           sudo pacman -Sy --noconfirm kde plasma &&\
-           echo -e "${SUCCESS} Succesfully installed KDE Plasma" || default_error;;
-        3) echo -e "${WAIT} Installing Gnome..."
-           sudo pacman -Sy --noconfirm gnome &&\
-           echo -e "${SUCCESS} Succesfully installed Gnome" || default_error;;
-        4) echo -e "${WAIT} Installing dwm..."
-           sudo pacman -Sy --noconfirm libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh &&\
+    case $profile in
+        1) echo -e "${WAIT} Adjusting towards a minimal environment..."
+           sudo pacman -Sy --noconfirm libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf monerod monero-wallet-cli signal-desktop element-desktop &&\
            git clone https://github.com/arthurmateu/dotfiles.git &&\
            cd dotfiles/dwm && sudo make clean install &&\
            cd ../dmenu && sudo make clean install &&\
@@ -91,12 +78,15 @@ function adjuster {
            mv ../.vimrc ../.zshrc ~/. && cd ~ &&\
            echo "dwm&" >> .xinitrc &&\
            echo "# feh --bg-fill Pictures/ &" >> .xinitrc &&\
-           echo -e "${SUCCESS} Succesfully installed dwm" || default_error;;
-        *) echo -e "${INFO} No desktop environment will be installed";;
+           echo -e "${SUCCESS} Succesfully adjusted minimal environment" || default_error;;
+        2) echo -e "${WAIT} Adjusting towards a desktop environment..."
+           sudo pacman -Sy --noconfirm gnome thunderbird monero &&\
+           echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error;;
+        *) echo -e "${INFO} No profile has been chosen.";;
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv firefox thunderbird networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc signal-desktop monero element-desktop cups &&\
+    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
@@ -118,12 +108,13 @@ function adjuster {
     git clone https://aur.archlinux.org/yay.git &&\
     cd yay/ &&\
     makepkg -si &&\
-    echo -e "${SUCCESS} Succesfully installed yay" || default_error
     cd ~ &&\
     rm -rf /tmp/yay
-    echo -e "${WAIT} Installing AUR packages..."
-    yay -Syu mullvad-vpn spotify discord megasync &&\
-    echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error
+    echo -e "${SUCCESS} Succesfully installed yay" || default_error
+    # TODO: Download specific AUR packages, depending on profile (minimal/desktop)
+    # echo -e "${WAIT} Installing AUR packages..."
+    # yay -Syu mullvad-vpn spotify discord megasync &&\
+    # echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error
 }
 
 function default_error {
