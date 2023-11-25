@@ -35,4 +35,3 @@ Please check all sources I used!
 - [LARBS](https://larbs.xyz/)
 - [RobFisher's Framework Arch Install guide](https://gist.github.com/RobFisher/abd9b2b9fca4194ac8df112715045b61)
 - [The Linux Command Line](https://linuxcommand.org/tlcl.php) by William Shotts
-- [sandipsky's autoinstall script](https://github.com/sandipsky/arch)

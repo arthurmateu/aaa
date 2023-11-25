@@ -88,7 +88,7 @@ function adjuster {
 
     case ${profile} in
         1) echo -e "${WAIT} Adjusting towards a minimal environment..."
-           sudo pacman -Syu --noconfirm git libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf neomutt newsboat monerod monero-wallet-cli &&\
+           sudo pacman -Syu --noconfirm pipewire pipewire-pulse pavucontrol git libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf neomutt newsboat monerod monero-wallet-cli &&\
            git clone https://github.com/arthurmateu/dotfiles.git &&\
            cd dotfiles/dwm && sudo make clean install &&\
            cd ../dmenu && sudo make clean install &&\
@@ -105,7 +105,7 @@ function adjuster {
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    sudo pacman -Syu --noconfirm pipewire pipewire-pulse pavucontrol base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn adobe-source-han-sans-jp-fonts adobe-source-han-serif-fonts cups &&\
+    sudo pacman -Syu --noconfirm git base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn adobe-source-han-sans-jp-fonts adobe-source-han-serif-fonts cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
