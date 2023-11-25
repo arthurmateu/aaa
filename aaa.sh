@@ -9,10 +9,22 @@ FAIL='\e[31m[-]\e[0m'
 QUESTION='\e[35m[?]\e[0m'
 
 function installer {
+    # Ask for information so user can set the instalation and forget about it
+    # echo -ne "${QUESTION} Please insert hostname: "
+    # read hostname
+    # echo -sne "${QUESTION} Please insert root password: "
+    # read rootpassword
+    # echo -ne "${QUESTION} Please insert username: "
+    # read username
+    # echo -sne "${QUESTION} Please insert ${username}'s account password: "
+    # read userpassword
+    # echo -ne "${QUESTION} Should ${username} be root? (Y/n): "
+    # read shoulduserberoot
+    # echo -sne "${QUESTION} Please insert encryption password: "
+    # read encryptionpass
+
     echo -e "${INFO} STARTING LOCALIZATION ${INFO}"
-        # (Automatically detect region and respective keymap and timezone)
-        # localectl list-keymaps | grep ${keymap}
-        # loadkeys ${keymap}
+        # (Automatically detect timezone)
         # timedatectl list-timezones | grep ${region}
         # ln -sf /usr/share/zoneinfo/${region} /etc/localtime
         # timedatectl set-ntp true
@@ -27,8 +39,6 @@ function installer {
     # Encrypt (ask for encryption password)
     echo -e "${INFO} ENCRYPTING PARTITIONS ${INFO}"
         # cryptsetup luksFormat /dev/nvme0n1p2
-        # echo -sne "${QUESTION} Please insert encryption password: "
-        # read encryptionpass
         # ...
         # {SET UP BTRFS SUBVOLUMES}
         # {MOUNT FILESYSTEMS}
@@ -42,28 +52,28 @@ function installer {
         # {UNCOMMENT DESIRED LOCALES, will probably use sed}
 
     # Set up account passwords (root - user [ask if should be root] - boot)
-        # Ask if user wants to set up hostname and account (y/N)
         # echo -e "${INFO} SETTING UP ACCOUNTS ${INFO}"
-        # echo -ne "${QUESTION} Please insert hostname: "
-        # read {hostname:=archlinux} > /etc/hostname
-        # echo -sne "${QUESTION} Please insert root password: "
-        # read userpassword
-        # echo -ne "${QUESTION} Please insert username: "
-        # read username
-        # echo -sne "${QUESTION} Please insert ${user}'s account password: "
-        # read userpassword
+        # echo "${hostname}" > /etc/hostname
+        # useradd -m ${username}
+        # passwd ${username}
+        # if [user -]; then 
+        #   usermod -aG wheel ${username}
+        # fi
 
     # Set up encrypted swap
     echo -e "${INFO} ENCRYPTING SWAP ${INFO}"
 }
 
 function adjuster {
-    #if [ "$EUID" -ne 0 ]; then 
-    #    if [username was declared during execution of installer]; then
-    #       switch to that one;
-    #    else
-    #       switch for first regular user;
-    #fi
+    if ["$EUID" -ne 0]; then 
+        if [username]; then
+           su ${username};
+        else
+           # TODO: switch for first regular user;
+           echo -e "${FAIL} Please run this as a regular user."
+           exit 1;
+
+    fi
     username=`whoami`
 
     echo -e "${INFO} DOWNLOADING REGULAR PACKAGES ${INFO}"
@@ -93,7 +103,7 @@ function adjuster {
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc cups &&\
+    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn  	adobe-source-han-sans-jp-fonts adobe-source-han-serif-fonts cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
