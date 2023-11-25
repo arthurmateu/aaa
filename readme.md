@@ -1,4 +1,4 @@
-# Arthur's Arch linux Auto-installer (AAA)
+# Arthur's Arch Auto-installer (AAA)
 :battery: *My batteries for Arch!* :battery:
 
 Archinstaller was giving me a lot of problems, so I decided to make this. The purpose of this script is to make an automatic Arch Linux install (with an encrypted drive) and/or install most packages I use daily.
