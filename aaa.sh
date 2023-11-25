@@ -9,24 +9,23 @@ FAIL='\e[31m[-]\e[0m'
 QUESTION='\e[35m[?]\e[0m'
 
 function installer {
-    # Set up system time
-        # echo -e "${INFO} STARTING LOCALIZATION ${INFO}"
+    echo -e "${INFO} STARTING LOCALIZATION ${INFO}"
         # (Automatically detect region and respective keymap and timezone)
-        # localectl list-keymaps | grep keymap
+        # localectl list-keymaps | grep ${keymap}
         # loadkeys ${keymap}
-        # timedatectl list-timezones | grep region
-        # ln -sf /usr/share/zoneinfo/{region} /etc/localtime
+        # timedatectl list-timezones | grep ${region}
+        # ln -sf /usr/share/zoneinfo/${region} /etc/localtime
         # timedatectl set-ntp true
 
     # Disk partitioning (ask size for boot [default = +350M], linux [default = -50G])
-        # echo -e "${INFO} PARTITIONING DISK ${INFO}"
+    echo -e "${INFO} PARTITIONING DISK ${INFO}"
 
     # Format partitions (boot [default = vfat])
-        # echo -e "${INFO} FORMATING DISK ${INFO}"
+    echo -e "${INFO} FORMATING DISK ${INFO}"
         # mkfs.vfat /dev/nvme0n1p1
 
     # Encrypt (ask for encryption password)
-        # echo -e "${INFO} ENCRYPTING PARTITIONS ${INFO}"
+    echo -e "${INFO} ENCRYPTING PARTITIONS ${INFO}"
         # cryptsetup luksFormat /dev/nvme0n1p2
         # echo -sne "${QUESTION} Please insert encryption password: "
         # read encryptionpass
@@ -35,7 +34,7 @@ function installer {
         # {MOUNT FILESYSTEMS}
 
     # Install arch (pacstrap - ask for drivers)
-        # echo -e "${INFO} INSTALLING ARCH ${INFO}"
+    echo -e "${INFO} INSTALLING ARCH ${INFO}"
         # pacstrap /mnt base linux linux-firmware git vim intel-ucode btrfs-progs
         # genfstab -U /mtn >> /mnt/etc/fstab
         # arch-chroot /mnt
@@ -55,10 +54,16 @@ function installer {
         # read userpassword
 
     # Set up encrypted swap
-        # echo -e "${INFO} ENCRYPTING SWAP ${INFO}"
+    echo -e "${INFO} ENCRYPTING SWAP ${INFO}"
 }
 
 function adjuster {
+    if [ "$EUID" -ne 0 ]; then 
+        # If username was declared during execution of installer, switch to that one
+        # else, switch for first regular user.
+    fi
+    username=`whoami`
+
     echo -e "${INFO} DOWNLOADING REGULAR PACKAGES ${INFO}"
 
     echo -ne "${QUESTION} Please choose a profile option: 
@@ -68,7 +73,7 @@ function adjuster {
     > "
     read profile
 
-    case $profile in
+    case ${profile} in
         1) echo -e "${WAIT} Adjusting towards a minimal environment..."
            sudo pacman -Sy --noconfirm libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf neomutt newsboat monerod monero-wallet-cli &&\
            git clone https://github.com/arthurmateu/dotfiles.git &&\
@@ -80,10 +85,8 @@ function adjuster {
            echo "# feh --bg-fill Pictures/ &" >> .xinitrc &&\
            echo -e "${SUCCESS} Succesfully adjusted minimal environment" || default_error;;
         2) echo -e "${WAIT} Adjusting towards a desktop environment..."
-           # TODO: actually install gnome
-           # sudo pacman -Sy --noconfirm gnome thunderbird monero signal-desktop &&\
-           # echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error
-           ;;
+           sudo pacman -Sy --noconfirm gnome thunderbird monero signal-desktop &&\
+           echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error;;
         *) echo -e "${INFO} No profile has been chosen.";;
     esac
 
@@ -92,8 +95,7 @@ function adjuster {
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
-    # TODO: if there's a non-root user, add it to the group
-    # sudo usermod -aG lp ${username} &&\
+    sudo usermod -aG lp ${username} &&\
     echo -e "${SUCCESS} Succesfully enabled printer" || default_error
 
     echo -e "${WAIT} Installing QEMU components..."
@@ -101,8 +103,7 @@ function adjuster {
     echo -e "${SUCCESS} Succesfully installed QEMU components" || default_error
     echo -e "${WAIT} Setting up QEMU..."
     sudo systemctl enable --now libvirtd.service &&\
-    # TODO: if there's a non-root user, add it to the group
-    # sudo usermod -aG libvirt ${username} &&\
+    sudo usermod -aG libvirt ${username} &&\
     sudo systemctl restart libvirtd.service &&\
     echo -e "${SUCCESS} Succesfully setted up QEMU" || default_error
 

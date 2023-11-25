@@ -23,6 +23,7 @@ curl -s https://raw.githubusercontent.com/arthurmateu/aaa/main/aaa.sh | bash
   - [ ] If it has been run after the installer and a new user has been provided, add it to the necessary groups
 - [X] Make it a one-line command ([similar to this](https://github.com/ChrisTitusTech/ArchTitus))
   - [ ] Make the one-liner shorter 
+  - [ ] Be able to run in one line, with positional parameters 
 - [ ] Make the `readme.md` file prettier
 
 ## Credits
