@@ -58,10 +58,12 @@ function installer {
 }
 
 function adjuster {
-    if [ "$EUID" -ne 0 ]; then 
-        # If username was declared during execution of installer, switch to that one
-        # else, switch for first regular user.
-    fi
+    #if [ "$EUID" -ne 0 ]; then 
+    #    if [username was declared during execution of installer]; then
+    #       switch to that one;
+    #    else
+    #       switch for first regular user;
+    #fi
     username=`whoami`
 
     echo -e "${INFO} DOWNLOADING REGULAR PACKAGES ${INFO}"
@@ -116,11 +118,17 @@ function adjuster {
     cd ~ &&\
     rm -rf /tmp/yay
     echo -e "${SUCCESS} Succesfully installed yay" || default_error
-    # TODO: Download specific AUR packages, depending on profile (minimal/desktop)
-        # MINIMAL: yay -Syu mullvad-vpn-cli signal-cli
-        # DESKTOP: yay -Syu mullvad-vpn spotify discord megasync &&\
-    # echo -e "${WAIT} Installing AUR packages..."
-    # echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error
+    # TODO: find a better way to implement this, to avoid repetition
+    case ${profile} in
+        1) echo -e "${WAIT} Installing AUR packages..."
+           yay -Syu mullvad-vpn-cli signal-cli &&\
+           echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error;;
+        2) echo -e "${WAIT} Installing AUR packages..."
+           yay -Syu mullvad-vpn spotify discord megasync &&\
+           echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error;;
+        *);;
+    esac
+    # 
 }
 
 function default_error {
@@ -139,7 +147,7 @@ Would you like to:
 > "
 read welcome_option
 
-case $welcome_option in
+case ${welcome_option} in
     1) installer;;
     2) adjuster;;
     3) installer && adjuster;;
