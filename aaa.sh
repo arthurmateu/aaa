@@ -56,7 +56,7 @@ function installer {
         # echo "${hostname}" > /etc/hostname
         # useradd -m ${username}
         # passwd ${username}
-        # if [user -]; then 
+        # if [shoulduserberoot -e "Y"]; then 
         #   usermod -aG wheel ${username}
         # fi
 
@@ -77,6 +77,7 @@ function adjuster {
     username=`whoami`
 
     echo -e "${INFO} DOWNLOADING REGULAR PACKAGES ${INFO}"
+    sudo sed -i '/ParallelDownloads/s/^#//g' /etc/pacman.conf
 
     echo -ne "${QUESTION} Please choose a profile option: 
     0. None
@@ -87,23 +88,24 @@ function adjuster {
 
     case ${profile} in
         1) echo -e "${WAIT} Adjusting towards a minimal environment..."
-           sudo pacman -Sy --noconfirm libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf neomutt newsboat monerod monero-wallet-cli &&\
+           sudo pacman -Syu --noconfirm git libx11 libxft libxinerama freetype2 fontconfig ttf-dejavu xorg-server xorg-xinit xorg-xsetroot feh lf neomutt newsboat monerod monero-wallet-cli &&\
            git clone https://github.com/arthurmateu/dotfiles.git &&\
            cd dotfiles/dwm && sudo make clean install &&\
            cd ../dmenu && sudo make clean install &&\
            cd ../st && sudo make clean install &&\
            mv ../.vimrc ../.zshrc ~/. && cd ~ &&\
            echo "dwm&" >> .xinitrc &&\
-           echo "# feh --bg-fill Pictures/ &" >> .xinitrc &&\
+           echo "#feh --bg-fill Pictures/ &" >> .xinitrc &&\
            echo -e "${SUCCESS} Succesfully adjusted minimal environment" || default_error;;
         2) echo -e "${WAIT} Adjusting towards a desktop environment..."
-           sudo pacman -Sy --noconfirm gnome thunderbird monero signal-desktop &&\
+           sudo pacman -Syu --noconfirm gnome gnome-extra xorg gdm thunderbird monero signal-desktop &&\
+           sudo systemctl enable gdm &&\
            echo -e "${SUCCESS} Succesfully adjusted desktop environment" || default_error;;
         *) echo -e "${INFO} No profile has been chosen.";;
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    sudo pacman -Sy --noconfirm base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn  	adobe-source-han-sans-jp-fonts adobe-source-han-serif-fonts cups &&\
+    sudo pacman -Syu --noconfirm pipewire pipewire-pulse pavucontrol base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn adobe-source-han-sans-jp-fonts adobe-source-han-serif-fonts cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
@@ -124,21 +126,24 @@ function adjuster {
     cd /tmp/yay &&\
     git clone https://aur.archlinux.org/yay.git &&\
     cd yay/ &&\
-    makepkg -si &&\
+    makepkg -si --noconfirm &&\
     cd ~ &&\
-    rm -rf /tmp/yay
+    rm -rf /tmp/yay &&\
     echo -e "${SUCCESS} Succesfully installed yay" || default_error
     # TODO: find a better way to implement this, to avoid repetition
     case ${profile} in
         1) echo -e "${WAIT} Installing AUR packages..."
-           yay -Syu mullvad-vpn-cli signal-cli &&\
+           yay -Syu --noconfirm mullvad-vpn-cli ncspot signal-cli &&\
            echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error;;
         2) echo -e "${WAIT} Installing AUR packages..."
-           yay -Syu mullvad-vpn spotify discord megasync &&\
+           yay -Syu --noconfirm mullvad-vpn spotify discord megasync &&\
            echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error;;
         *);;
     esac
-    # 
+    
+    echo -e "${SUCCESS} Succesfully installed regular packages.
+    You can now reboot your machine
+    "
 }
 
 function default_error {
