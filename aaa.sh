@@ -105,24 +105,26 @@ function adjuster {
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    sudo pacman -Syu --noconfirm git base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn adobe-source-han-sans-jp-fonts adobe-source-han-serif-fonts cups &&\
+    # TODO: fix japanese fonts "adobe-source-han-sans-jp-fonts" and "adobe-source-han-serif-fonts"
+    sudo pacman -Syu --noconfirm git base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
     sudo systemctl enable --now cups &&\
     sudo usermod -aG lp ${username} &&\
     echo -e "${SUCCESS} Succesfully enabled printer" || default_error
 
-    echo -e "${WAIT} Installing QEMU components..."
-    sudo pacman -Sy --noconfirm qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs xclip &&\
-    echo -e "${SUCCESS} Succesfully installed QEMU components" || default_error
-    echo -e "${WAIT} Setting up QEMU..."
-    sudo systemctl enable --now libvirtd.service &&\
-    sudo usermod -aG libvirt ${username} &&\
-    sudo systemctl restart libvirtd.service &&\
-    echo -e "${SUCCESS} Succesfully setted up QEMU" || default_error
+    # TODO: fix iptables file conflict
+    # echo -e "${WAIT} Installing QEMU components..."
+    # sudo pacman -Sy --noconfirm qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs xclip &&\
+    # echo -e "${SUCCESS} Succesfully installed QEMU components" || default_error
+    # echo -e "${WAIT} Setting up QEMU..."
+    # sudo systemctl enable --now libvirtd.service &&\
+    # sudo usermod -aG libvirt ${username} &&\
+    # sudo systemctl restart libvirtd.service &&\
+    # echo -e "${SUCCESS} Succesfully setted up QEMU" || default_error
 
     echo -e "${WAIT} Installing yay..." # AUR Helper
-    mkdir /tmp/yay &&\
+    mkdir /tmp/yay
     cd /tmp/yay &&\
     git clone https://aur.archlinux.org/yay.git &&\
     cd yay/ &&\

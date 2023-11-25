@@ -6,7 +6,7 @@ Archinstaller was giving me a lot of problems, so I decided to make this. The pu
 ## How to use
 You will need the following:
 - You will need a bootable USB drive with the [latest Arch image](https://archlinux.org/download/)
-- An internet connection after booting (see [iwctl](https://wiki.archlinux.org/title/iwd#iwctl) if you plan on doing this through a wireless connection).
+- An internet connection after booting (see [iwctl](https://wiki.archlinux.org/title/iwd#iwctl) if you plan on doing this through a wireless connection)[^1].
 
 Afterwards, just run the following command:
 ```
@@ -35,3 +35,8 @@ Please check all sources I used!
 - [LARBS](https://larbs.xyz/)
 - [RobFisher's Framework Arch Install guide](https://gist.github.com/RobFisher/abd9b2b9fca4194ac8df112715045b61)
 - [The Linux Command Line](https://linuxcommand.org/tlcl.php) by William Shotts
+
+
+
+
+[^1]: Run `iwctl` and `station wlan0 connect <network>`.
