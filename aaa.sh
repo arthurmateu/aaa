@@ -56,7 +56,7 @@ function installer {
         # echo "${hostname}" > /etc/hostname
         # useradd -m ${username}
         # passwd ${username}
-        # if [shoulduserberoot -e "Y"]; then 
+        # if [shoulduserberoot -e "Y"]; then
         #   usermod -aG wheel ${username}
         # fi
 
@@ -65,7 +65,7 @@ function installer {
 }
 
 function adjuster {
-    if ["$EUID" -ne 0]; then 
+    if ["$EUID" -ne 0]; then
         if [username]; then
            su ${username};
         else
@@ -79,7 +79,7 @@ function adjuster {
     echo -e "${INFO} DOWNLOADING REGULAR PACKAGES ${INFO}"
     sudo sed -i '/ParallelDownloads/s/^#//g' /etc/pacman.conf
 
-    echo -ne "${QUESTION} Please choose a profile option: 
+    echo -ne "${QUESTION} Please choose a profile option:
     0. None
     1. Minimal (dwm w/personal dotfiles)
     2. Desktop (Gnome)
@@ -105,7 +105,7 @@ function adjuster {
     esac
 
     echo -e "${WAIT} Installing regular packages..."
-    # TODO: fix japanese fonts "adobe-source-han-sans-jp-fonts" and "adobe-source-han-serif-fonts"
+    # TODO: add language fonts, change default fonts (find a better one)
     sudo pacman -Syu --noconfirm git base-devel vim neofetch mpv htop firefox networkmanager webkit2gtk man-db qbittorrent cherrytree keepassxc openvpn cups &&\
     echo -e "${SUCCESS} Succesfully installed packages" || default_error
     echo -e "${WAIT} Adjusting printer..."
@@ -113,7 +113,7 @@ function adjuster {
     sudo usermod -aG lp ${username} &&\
     echo -e "${SUCCESS} Succesfully enabled printer" || default_error
 
-    # TODO: fix iptables file conflict
+    # TODO: fix iptables file conflict (remove iptable, despite default being N)
     # echo -e "${WAIT} Installing QEMU components..."
     # sudo pacman -Sy --noconfirm qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat ebtables iptables libguestfs xclip &&\
     # echo -e "${SUCCESS} Succesfully installed QEMU components" || default_error
@@ -142,7 +142,7 @@ function adjuster {
            echo -e "${SUCCESS} Succesfully installed AUR packages" || default_error;;
         *);;
     esac
-    
+
     echo -e "${SUCCESS} Succesfully installed regular packages.
     You can now reboot your machine
     "
